@@ -9,10 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "sharepointplus": ">= 4.0",
-    "azure": "^1.2.0-preview"
-  },
-  "devDependencies": {
-    "chai":"3.5.0"
+    "sharepointplus": ">= 4.0"
   }
 }
