@@ -1,7 +1,7 @@
 {
-  "name": "sample",
+  "name": "feedproto",
   "version": "1.0.0",
-  "description": "Sample Function App for testing",
+  "description": "Prototype for Azure Function feed processing",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,8 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "azure": "^1.2.0-preview",
-    "lodash": "^4.17.4",
-    "tedious": "^1.14.0"
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "chai":"3.5.0"
