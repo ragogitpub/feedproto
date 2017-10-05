@@ -39,11 +39,13 @@ module.exports = function (context, myQueueItem) {
         outputBinding.PartitionKey = agencyName + '-' + listName;
         outputBinding.RowKey = myQueueItem[idField] + '-' + (new Date()).toISOString();
         context.bindings.tableContent = [outputBinding];
+        context.log('outputBinding', outputBinding);
 
         var sharepointObj = JSON.parse(JSON.stringify(myQueueItem));
         delete sharepointObj.nc4__agencyName;
         delete sharepointObj.nc4__listName;
         delete sharepointObj.nc4__idField;
+        context.log('sharepointObj', sharepointObj);
 
         var userDefinition = {
                 username: user,
