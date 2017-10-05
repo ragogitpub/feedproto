@@ -96,7 +96,7 @@
     }
                            
     function addToSharePoint( context, _sp, _msg, _idField ) {
-            context.log( idField + '=' + _msg[_idField] + ' doesnt exists.. adding..' );
+            context.log( idField + '=' + _msg[_idField] + ' doesnt exists.. adding.. force' );
     	/*
             _sp.add( _msg,
                             {
