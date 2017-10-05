@@ -67,10 +67,10 @@ function processMessage( context, _sp, _list, _idField, _msg ) {
                 .get( { fields: '', where: _idField + ' = "' + _msg[ _idField ] + '"' },
                         function( data, error ) {
                                 if( error ) { 
-                                        context.log.error( 'lookup by ' + idField + ' for value ' + _msg[_idField ] + ' returned error' );
-                                        context.log.error( error );
+                                        context.log( 'lookup by ' + idField + ' for value ' + _msg[_idField ] + ' returned error' );
+                                        context.log( error );
 					_msg.nc4__error = error;
-                                        context.done( new Error( 'lookup failed - aborting..' ), _msg );
+                                        context.done( 'lookup failed - aborting..', _msg );
 					return;
                                 }       
                                 for ( var i = 0; i < data.length; i++ ) {
@@ -84,7 +84,7 @@ function processMessage( context, _sp, _list, _idField, _msg ) {
                                 } else if ( data.length > 1 ) {
 					context.log( 'data.length was > 1' );
 					_msg.nc4__error = 'something wrong';
-                                        context.done( new Error( 'Only expected one item returned - something is wrong' ), _msg );
+                                        context.done( 'Only expected one item returned - something is wrong', _msg );
                                 } else {
 					context.log( 'data.length was 1' );
                                         updateSharePoint( context, _sp, _msg, _idField );
@@ -100,8 +100,8 @@ function addToSharePoint( context, _sp, _msg, _idField ) {
                                 error:function(items) {
                                         for (var i=0; i < items.length; i++)
                                                 context.log("Add Error '"+items[i].errorMessage+"' with:"+items[i][ _idField ]);
-					context.log.error( items[0].errorMessage );
-					context.done( new Error( 'Add Error ' + items[0].errorMessage + ' id:' + items[0][ _idField ] ) );
+					context.log( items[0].errorMessage );
+					context.done( 'Add Error ' + items[0].errorMessage + ' id:' + items[0][ _idField ], _msg  );
                                 },
                                 success:function(items) {
                                         for (var i=0; i < items.length; i++)
@@ -120,8 +120,8 @@ function updateSharePoint( context, _sp, _msg, _idField ) {
                                 error:function(items) {
                                         for (var i=0; i < items.length; i++)
                                                 context.log("Update Error '"+items[i].errorMessage+"' with:"+items[i][ _idField ]);
-					context.log.error( items[0].errorMessage );
-					context.done( new Error( 'Update Error ' + items[0].errorMessage + ' id:' + items[0][ _idField ] ) );
+					context.log( items[0].errorMessage );
+					context.done( 'Update Error ' + items[0].errorMessage + ' id:' + items[0][ _idField ], _msg );
                                 },
                                 success:function(items) {
                                         for (var i=0; i < items.length; i++)
