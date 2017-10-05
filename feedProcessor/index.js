@@ -66,35 +66,38 @@ function processMessage( context, _sp, _list, _idField, _msg ) {
         _list
                 .get( { fields: '', where: _idField + ' = "' + _msg[ _idField ] + '"' },
                         function( data, error ) {
+				context.log( 'get callback triggered' );
                                 if( error ) { 
                                         context.log( 'lookup by ' + idField + ' for value ' + _msg[_idField ] + ' returned error' );
-                                        context.log( error );
 					_msg.nc4__error = error;
                                         context.done( 'lookup failed - aborting..', _msg );
 					return;
-                                }       
-                                for ( var i = 0; i < data.length; i++ ) {
-                                        context.log.info( ' id lookup returned object ' + data[i].getAttribute( _idField ));
-                                }       
-                                
-                                if( data.length === 0 ) {
-					context.log( 'data.length was 0' );
-                                        addToSharePoint( context, _sp, _msg, _idField );
-					// context.done( null, _msg );
-                                } else if ( data.length > 1 ) {
-					context.log( 'data.length was > 1' );
-					_msg.nc4__error = 'something wrong';
-                                        context.done( 'Only expected one item returned - something is wrong', _msg );
                                 } else {
-					context.log( 'data.length was 1' );
-                                        updateSharePoint( context, _sp, _msg, _idField );
-					// context.done( null, _msg );
-                                }       
+
+	                                for ( var i = 0; i < data.length; i++ ) {
+        	                                context.log.info( ' id lookup returned object ' + data[i].getAttribute( _idField ));
+                	                }       
+                                
+                        	        if( data.length === 0 ) {
+						context.log( 'data.length was 0' );
+                                        	addToSharePoint( context, _sp, _msg, _idField );
+						// context.done( null, _msg );
+        	                        } else if ( data.length > 1 ) {
+						context.log( 'data.length was > 1' );
+						_msg.nc4__error = 'something wrong';
+                                	        context.done( 'Only expected one item returned - something is wrong', _msg );
+	                                } else {
+						context.log( 'data.length was 1' );
+                	                        updateSharePoint( context, _sp, _msg, _idField );
+						// context.done( null, _msg );
+                               		}
+				}       
                         } );    
 }
                        
 function addToSharePoint( context, _sp, _msg, _idField ) {
         context.log( idField + '=' + _msg[_idField] + ' doesnt exists.. adding..' );
+	/*
         _sp.add( _msg,
                         {
                                 error:function(items) {
@@ -110,10 +113,12 @@ function addToSharePoint( context, _sp, _msg, _idField ) {
                                 }
                         }
                 );
+	*/
 }
 
 function updateSharePoint( context, _sp, _msg, _idField ) {
         context.log( idField + '=' + _msg[_idField] + ' exists.. updating..' );
+	/*
         _sp.update( _msg,
                         {
                                 where: _idField + ' = "' + _msg[ _idField ] + '"',
@@ -130,6 +135,7 @@ function updateSharePoint( context, _sp, _msg, _idField ) {
                                 }
                         }
                 );
+	*/
 }
 
 
