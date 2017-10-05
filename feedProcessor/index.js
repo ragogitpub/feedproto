@@ -35,12 +35,12 @@ module.exports = function (context, myQueueItem) {
                 'agency=>', agencyName, 'list=>', listName, 'idField=>', idField,
                 'url=>', url, 'domain=>', domain, 'username=>', user, 'password=>', password);
 
-        var outputBinding = myQueueItem;
+        var outputBinding = JSON.parse(JSON.stringify(myQueueItem));
         outputBinding.PartitionKey = agencyName + '-' + listName;
         outputBinding.RowKey = myQueueItem[idField] + '-' + (new Date()).toISOString();
         context.bindings.tableContent = [outputBinding];
 
-        var sharepointObj = myQueueItem;
+        var sharepointObj = JSON.parse(JSON.stringify(myQueueItem));
         delete sharepointObj.nc4__agencyName;
         delete sharepointObj.nc4__listName;
         delete sharepointObj.nc4__idField;
@@ -56,6 +56,7 @@ module.exports = function (context, myQueueItem) {
                 var list = sp.list(listName, url);
                 processMessage(context, sp, list, idField, sharepointObj);
         } catch (ex) {
+                context.log.error(ex);
                 outputBinding.nc4_error = ex;
                 context.done();
         }
@@ -99,15 +100,17 @@ function processMessage(context, _sp, _list, _idField, _msg) {
 }
 
 function addToSharePoint(context, _sp, _msg, _idField) {
-        context.log(idField + '=' + _msg[_idField] + ' doesnt exists.. adding..');
+        context.log(_idField + '=' + _msg[_idField] + ' doesnt exists.. adding..');
         _sp.add(_msg, {
                 error: function (items) {
+                        context.log('addToSharePoint:error() triggered');
                         for (var i = 0; i < items.length; i++)
                                 context.log("Add Error '" + items[i].errorMessage + "' with:" + items[i][_idField]);
                         context.binding.tableContent.nc4__error = items[0].errorMessage;
                         context.done();
                 },
                 success: function (items) {
+                        context.log('addToSharePoint:success() triggered');
                         for (var i = 0; i < items.length; i++)
                                 context.log("Add Success for: (" + _idField + ":" + items[i][_idField] + " )");
                         context.done();
@@ -117,16 +120,18 @@ function addToSharePoint(context, _sp, _msg, _idField) {
 
 
 function updateSharePoint(context, _sp, _msg, _idField) {
-        context.log(idField + '=' + _msg[_idField] + ' exists.. updating..');
+        context.log(_idField + '=' + _msg[_idField] + ' exists.. updating..');
         _sp.update(_msg, {
                 where: _idField + ' = "' + _msg[_idField] + '"',
                 error: function (items) {
+                        context.log('updateToSharePoint:error() triggered');
                         for (var i = 0; i < items.length; i++)
                                 context.log("Update Error '" + items[i].errorMessage + "' with:" + items[i][_idField]);
                         context.binding.tableContent.nc4__error = items[0].errorMessage;
                         context.done();
                 },
                 success: function (items) {
+                        context.log('updateToSharePoint:success() triggered');
                         for (var i = 0; i < items.length; i++)
                                 context.log("Update Success for: (" + _idField + ":" + items[i][_idField] + " )");
                         context.done();
