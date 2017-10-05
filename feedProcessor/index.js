@@ -8,17 +8,19 @@ module.exports = function (context, myQueueItem) {
     var idField = myQueueItem.nc4__idField;
 
     context.log( 
-		'agency=', 
+		'agency=>', 
 		agencyName, 
-		'list=', 
+		'list=>', 
 		listName, 
-		'idField=', 
+		'idField=>', 
 		idField,
-		'url=',
+		'url=>',
 		urlForAgency( agencyName ),
-		'username=',
+		'domain=>',
+		domainForAgency( agencyName ),
+		'username=>',
 		userForAgency( agencyName ),
-		'password=',
+		'password=>',
 		passwordForAgency( agencyName ) );
 
     var itemJSON = myQueueItem;
@@ -48,3 +50,9 @@ function passwordForAgency( agencyName )
 {
     return settingForAgency( agencyName, 'password' );
 }
+
+function domainForAgency( agencyName )
+{
+    return settingForAgency( agencyName, 'domain' );
+}
+
