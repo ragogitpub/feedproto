@@ -5,21 +5,19 @@ module.exports = function (context, myQueueItem) {
     var listName = myQueueItem.nc4__listName;
     var idField = myQueueItem.nc4__idField;
 
+    var url = urlForAgency( agencyName );
+    var user = userForAgency( agencyName );
+    var password = passwordForAgency( agencyName );
+    var domain = domainForAgency( agencyName );
+
     context.log.info( 
-		'agency=>', 
-		agencyName, 
-		'list=>', 
-		listName, 
-		'idField=>', 
-		idField, 
-		'url=>',
-		urlForAgency( agencyName ),
-		'domain=>',
-		domainForAgency( agencyName ),
-		'username=>',
-		userForAgency( agencyName ),
-		'password=>',
-		passwordForAgency( agencyName ) );
+		'agency=>', agencyName, 
+		'list=>', listName, 
+		'idField=>', idField, 
+		'url=>', url,
+		'domain=>', domain,
+		'username=>', user,
+		'password=>', password );
 
     var itemJSON = myQueueItem;
     itemJSON.PartitionKey = agencyName + '-' + listName;
