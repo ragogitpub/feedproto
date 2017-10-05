@@ -78,17 +78,17 @@ function processMessage( context, _sp, _list, _idField, _msg ) {
                                 }       
                                 
                                 if( data.length === 0 ) {
-                                        // addToSharePoint( context, _sp, _msg, _idField );
 					context.log( 'data.length was 0' );
-					context.done( null, _msg );
+                                        addToSharePoint( context, _sp, _msg, _idField );
+					// context.done( null, _msg );
                                 } else if ( data.length > 1 ) {
 					context.log( 'data.length was > 1' );
 					_msg.nc4__error = 'something wrong';
                                         context.done( new Error( 'Only expected one item returned - something is wrong' ), _msg );
                                 } else {
-                                        // updateSharePoint( context, _sp, _msg, _idField );
 					context.log( 'data.length was 1' );
-					context.done( null, _msg );
+                                        updateSharePoint( context, _sp, _msg, _idField );
+					// context.done( null, _msg );
                                 }       
                         } );    
 }
@@ -100,6 +100,7 @@ function addToSharePoint( context, _sp, _msg, _idField ) {
                                 error:function(items) {
                                         for (var i=0; i < items.length; i++)
                                                 context.log("Add Error '"+items[i].errorMessage+"' with:"+items[i][ _idField ]);
+					context.log.error( items[0].errorMessage );
 					context.done( new Error( 'Add Error ' + items[0].errorMessage + ' id:' + items[0][ _idField ] ) );
                                 },
                                 success:function(items) {
@@ -119,6 +120,7 @@ function updateSharePoint( context, _sp, _msg, _idField ) {
                                 error:function(items) {
                                         for (var i=0; i < items.length; i++)
                                                 context.log("Update Error '"+items[i].errorMessage+"' with:"+items[i][ _idField ]);
+					context.log.error( items[0].errorMessage );
 					context.done( new Error( 'Update Error ' + items[0].errorMessage + ' id:' + items[0][ _idField ] ) );
                                 },
                                 success:function(items) {
