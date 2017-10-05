@@ -25,10 +25,14 @@ module.exports = function (context, myQueueItem) {
         domain: domain
     };
 
-    var sp = $SP().auth( userDefinition );
-    var list = sp.list( listName, url );
-
-    processMessage( context, sp, list, idField, itemJSON )
+    try { 
+	var sp = $SP().auth( userDefinition ); 
+	var list = sp.list( listName, url ); 
+	processMessage( context, sp, list, idField, itemJSON );
+    } catch( ex ) {
+	itemJSON.nc4_error = ex;
+	context.done( ex, itemJSON );
+    }
 
     // context.done( null, itemJSON );
 };
@@ -65,6 +69,7 @@ function processMessage( context, _sp, _list, _idField, _msg ) {
                                 if( error ) { 
                                         context.log.error( 'lookup by ' + idField + ' for value ' + _msg[_idField ] + ' returned error' );
                                         context.log.error( error );
+					_msg.nc4__error = error;
                                         context.done( new Error( 'lookup failed - aborting..' ), _msg );
 					return;
                                 }       
@@ -76,6 +81,7 @@ function processMessage( context, _sp, _list, _idField, _msg ) {
                                         // addToSharePoint( context, _sp, _msg, _idField );
 					context.done( null, _msg );
                                 } else if ( data.length > 1 ) {
+					_msg.nc4__error = 'something wrong';
                                         context.done( new Error( 'Only expected one item returned - something is wrong' ), _msg );
                                 } else {
                                         // updateSharePoint( context, _sp, _msg, _idField );
