@@ -67,35 +67,35 @@ function processMessage(context, _sp, _list, _idField, _msg) {
         context.log('processMessage, entry()');
         _list
                 .get({
-                                fields: '',
-                                where: _idField + ' = "' + _msg[_idField] + '"'
-                        },
-                        function (data, error) {
-                                context.log('get callback triggered');
-                                if (error) {
-                                        context.log('lookup by ' + idField + ' for value ' + _msg[_idField] + ' returned error');
-                                        context.binding.tableContent.nc4__error = error;
-                                        context.done();
-                                        return;
-                                } else {
+                        fields: '',
+                        where: _idField + ' = "' + _msg[_idField] + '"'
+                },
+                function (data, error) {
+                        context.log('get callback triggered');
+                        if (error) {
+                                context.log('lookup by ' + idField + ' for value ' + _msg[_idField] + ' returned error');
+                                context.binding.tableContent.nc4__error = error;
+                                context.done();
+                                return;
+                        } else {
 
-                                        for (var i = 0; i < data.length; i++) {
-                                                context.log.info(' id lookup returned object ' + data[i].getAttribute(_idField));
-                                        }
-
-                                        if (data.length === 0) {
-                                                context.log('data.length was 0');
-                                                addToSharePoint(context, _sp, _msg, _idField);
-                                        } else if (data.length > 1) {
-                                                context.log('data.length was > 1');
-                                                context.binding.tableContent.nc4__error = 'something wrong';
-                                                context.done('Only expected one item returned - something is wrong', _msg);
-                                        } else {
-                                                context.log('data.length was 1');
-                                                updateSharePoint(context, _sp, _msg, _idField);
-                                        }
+                                for (var i = 0; i < data.length; i++) {
+                                        context.log.info(' id lookup returned object ' + data[i].getAttribute(_idField));
                                 }
-                        });
+
+                                if (data.length === 0) {
+                                        context.log('data.length was 0');
+                                        addToSharePoint(context, _sp, _msg, _idField);
+                                } else if (data.length > 1) {
+                                        context.log('data.length was > 1');
+                                        context.binding.tableContent.nc4__error = 'something wrong';
+                                        context.done('Only expected one item returned - something is wrong', _msg);
+                                } else {
+                                        context.log('data.length was 1');
+                                        updateSharePoint(context, _sp, _msg, _idField);
+                                }
+                        }
+                });
 }
 
 function addToSharePoint(context, _sp, _msg, _idField) {
@@ -113,7 +113,6 @@ function addToSharePoint(context, _sp, _msg, _idField) {
                         context.done();
                 }
         });
-        */
 }
 
 
@@ -133,5 +132,4 @@ function updateSharePoint(context, _sp, _msg, _idField) {
                         context.done();
                 }
         });
-        */
 }
