@@ -30,7 +30,7 @@ module.exports = function (context, myQueueItem) {
 
     // processMessage( context, sp, list, idField, itemJSON )
 
-    context.done();
+    context.done( null, itemJSON );
 };
 
 function settingForAgency(agencyName, settingName)
