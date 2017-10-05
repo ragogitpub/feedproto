@@ -99,7 +99,7 @@ function addToSharePoint( context, _sp, _msg, _idField ) {
                                 success:function(items) {
                                         for (var i=0; i < items.length; i++)
                                                 context.log("Add Success for: (" + _idField  + ":"+items[i][ _idField ] + " )");
-					context.done();
+					context.done( null, _msg );
                                 }
                         }
                 );
@@ -118,7 +118,7 @@ function updateSharePoint( context, _sp, _msg, _idField ) {
                                 success:function(items) {
                                         for (var i=0; i < items.length; i++)
                                                 context.log("Update Success for: (" + _idField  + ":"+items[i][ _idField ] + " )");
-					context.done();
+					context.done( null, _msg );
                                 }
                         }
                 );
