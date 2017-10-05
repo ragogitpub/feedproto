@@ -17,7 +17,7 @@ module.exports = function (context, myQueueItem) {
     var itemJSON = myQueueItem;
     itemJSON.PartitionKey = agencyName + '-' + listName;
     itemJSON.RowKey = myQueueItem[ idField ] + '-' + (new Date()).toISOString();
-    // context.bindings.tableContent = [ itemJSON ];
+    context.bindings.tableContent = [ itemJSON ];
 
     var userDefinition = {
         username: user,
