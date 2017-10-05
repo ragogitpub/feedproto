@@ -11,13 +11,8 @@ module.exports = function (context, myQueueItem) {
     var domain = domainForAgency( agencyName );
 
     context.log.info( 
-		'agency=>', agencyName, 
-		'list=>', listName, 
-		'idField=>', idField, 
-		'url=>', url,
-		'domain=>', domain,
-		'username=>', user,
-		'password=>', password );
+		'agency=>', agencyName, 'list=>', listName, 'idField=>', idField, 
+		'url=>', url, 'domain=>', domain, 'username=>', user, 'password=>', password );
 
     var itemJSON = myQueueItem;
     itemJSON.PartitionKey = agencyName + '-' + listName;
@@ -33,9 +28,9 @@ module.exports = function (context, myQueueItem) {
     var sp = $SP().auth( userDefinition );
     var list = sp.list( listName, url );
 
-    processMessage( context, sp, list, idField, itemJSON )
+    // processMessage( context, sp, list, idField, itemJSON )
 
-    // context.done();
+    context.done();
 };
 
 function settingForAgency(agencyName, settingName)
