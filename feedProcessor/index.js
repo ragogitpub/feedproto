@@ -56,7 +56,7 @@ module.exports = function (context, myQueueItem) {
         try {
                 var sp = $SP().auth(userDefinition);
                 var list = sp.list(listName, url);
-                updateSharePoint(context, sp, sharepointObj, idField);
+                processMessage(context, sp, list, idField, sharepointObj);
         } catch (ex) {
                 context.log.error(ex);
                 outputBinding.nc4_error = ex;
