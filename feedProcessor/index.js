@@ -1,8 +1,6 @@
 const $SP = require('sharepointplus');
 
 module.exports = function (context, myQueueItem) {
-    context.log('Processing', myQueueItem);
-
     var agencyName = myQueueItem.nc4__agencyName;
     var listName = myQueueItem.nc4__listName;
     var idField = myQueueItem.nc4__idField;
@@ -13,7 +11,8 @@ module.exports = function (context, myQueueItem) {
 		'list=>', 
 		listName, 
 		'idField=>', 
-		idField,
+		idField );
+    context.log(
 		'url=>',
 		urlForAgency( agencyName ),
 		'domain=>',
