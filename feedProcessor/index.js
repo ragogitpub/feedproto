@@ -28,9 +28,9 @@ module.exports = function (context, myQueueItem) {
     var sp = $SP().auth( userDefinition );
     var list = sp.list( listName, url );
 
-    // processMessage( context, sp, list, idField, itemJSON )
+    processMessage( context, sp, list, idField, itemJSON )
 
-    context.done( null, itemJSON );
+    // context.done( null, itemJSON );
 };
 
 function settingForAgency(agencyName, settingName)
@@ -65,7 +65,7 @@ function processMessage( context, _sp, _list, _idField, _msg ) {
                                 if( error ) { 
                                         context.log.error( 'lookup by ' + idField + ' for value ' + _msg[_idField ] + ' returned error' );
                                         context.log.error( error );
-                                        context.done( new Error( 'lookup failed - aborting..' ) );
+                                        context.done( new Error( 'lookup failed - aborting..' ), _msg );
 					return;
                                 }       
                                 for ( var i = 0; i < data.length; i++ ) {
@@ -73,11 +73,13 @@ function processMessage( context, _sp, _list, _idField, _msg ) {
                                 }       
                                 
                                 if( data.length === 0 ) {
-                                        addToSharePoint( context, _sp, _msg, _idField );
+                                        // addToSharePoint( context, _sp, _msg, _idField );
+					context.done( null, _msg );
                                 } else if ( data.length > 1 ) {
-                                        context.done( new Error( 'Only expected one item returned - something is wrong' ) );
+                                        context.done( new Error( 'Only expected one item returned - something is wrong' ), _msg );
                                 } else {
-                                        updateSharePoint( context, _sp, _msg, _idField );
+                                        // updateSharePoint( context, _sp, _msg, _idField );
+					context.done( null, _msg );
                                 }       
                         } );    
 }
