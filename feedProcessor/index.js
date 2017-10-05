@@ -105,7 +105,7 @@ function addToSharePoint(context, _sp, _msg, _idField) {
         context.log(_idField + '=' + _msg[_idField] + ' doesnt exists.. adding..');
         _sp.add(_msg, {
                 error: function (items) {
-                        context.log('addToSharePoint:error() triggered');
+                        context.log.error('addToSharePoint:error() triggered');
                         for (var i = 0; i < items.length; i++)
                                 context.log.error("Add Error '" + items[i].errorMessage + "' with:" + items[i][_idField]);
                         context.binding.tableContent.nc4__error = items[0].errorMessage;
