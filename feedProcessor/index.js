@@ -35,7 +35,7 @@ module.exports = function (context, myQueueItem) {
     var sp = $SP().auth( userDefinition );
     var list = sp.list( listName, url );
 
-    processMessage( context, sp, list, idField, myQueueItem )
+    processMessage( context, sp, list, idField, itemJSON )
 
     context.done();
 };
