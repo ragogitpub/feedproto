@@ -3,9 +3,9 @@ const $SP = require('sharepointplus');
 module.exports = function (context, myQueueItem) {
     context.log('JavaScript queue trigger function processed work item', myQueueItem);
 
-    var agencyName = myQueueItem.agencyName;
-    var listName = myQueueItem.listName;
-    var idField = myQueueItem.idField;
+    var agencyName = myQueueItem.nc4__agencyName;
+    var listName = myQueueItem.nc4__listName;
+    var idField = myQueueItem.nc4__idField;
 
     var itemJSON = myQueueItem;
     itemJSON.PartitionKey = agencyName + '-' + listName;
