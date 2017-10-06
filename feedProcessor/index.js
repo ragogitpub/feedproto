@@ -57,7 +57,6 @@ function cloneForSharePoint(context, msg) {
 }
 
 function processMessage(context, _sp, _list, _idField, _msg) {
-        context.log('processMessage, entry()');
         _list
                 .get({
                                 fields: '',
@@ -69,19 +68,12 @@ function processMessage(context, _sp, _list, _idField, _msg) {
                                         context.done(error);
                                         return;
                                 } else {
-
-                                        for (var i = 0; i < data.length; i++) {
-                                                context.log.info(' id lookup returned object ' + data[i].getAttribute(_idField));
-                                        }
-
                                         if (data.length === 0) {
-                                                context.log.error('data.length was 0');
                                                 addToSharePoint(context, _sp, _msg, _idField);
                                         } else if (data.length > 1) {
                                                 context.log.error('data.length was > 1');
                                                 context.done('Only expected one item returned - something is wrong');
                                         } else {
-                                                context.log('data.length was 1');
                                                 updateSharePoint(context, _sp, _msg, _idField);
                                         }
                                 }
@@ -113,7 +105,6 @@ function addToSharePoint(context, _sp, _msg, _idField) {
 
 function updateSharePoint(context, _sp, _msg, _idField) {
         context.log(_idField + '=' + _msg[_idField] + ' exists.. updating..');
-        context.log(_msg);
         _sp.update(_msg, {
                 where: _idField + ' = "' + _msg[_idField] + '"',
                 error: function (items) {
@@ -121,6 +112,7 @@ function updateSharePoint(context, _sp, _msg, _idField) {
                         try {
                                 context.log.error(items[0].errorMessage);
                                 context.log.error( context );
+                                context.bindings.tableContent[0].nc4__error = items[0].errorMessage;
                                 context.done(items[0].errorMessage);
                         } catch(ex) {
                                 context.log.error(ex);
