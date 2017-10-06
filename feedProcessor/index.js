@@ -1,30 +1,5 @@
 const $SP = require('sharepointplus');
 
-function cloneForSharePoint( context, msg ) {
-        // var sharepointObj = JSON.parse(JSON.stringify(msg));
-        // delete sharepointObj.nc4__agencyName;
-        // delete sharepointObj.nc4__listName;
-        // delete sharepointObj.nc4__idField;
-
-        var sharepointObj = {};
-        for( var k in msg) {
-                if ( msg.hasOwnProperty(k)) {
-                        if( 
-                                k == 'nc4__agencyName' 
-                                || k == 'nc4__listName'
-                                || k == 'nc4__idField'
-                        ) {
-                                context.log( 'ignoring', k );
-                        } else {
-                                context.log('assigning', k, '=', msg[k]);
-                                sharepointObj[k] = msg[k];
-                        }
-                }
-        }
-        context.log('sharepointObj', sharepointObj);
-        return sharepointObj;
-}
-
 module.exports = function (context, myQueueItem) {
         var agencyName = myQueueItem.nc4__agencyName;
         var listName = myQueueItem.nc4__listName;
@@ -57,8 +32,8 @@ module.exports = function (context, myQueueItem) {
                 //context.done();
         } catch (ex) {
                 context.log.error('exception handler triggered', ex);
-                outputBinding.nc4_error = ex;
-                context.done();
+                outputBinding.nc4__error = ex;
+                context.done(ex);
         }
 
         // context.done();
@@ -68,8 +43,17 @@ function cloneForOutputBinding( context, agencyName, listName, idField, msg ) {
         var outputBinding = JSON.parse(JSON.stringify(msg));
         outputBinding.PartitionKey = agencyName + '-' + listName;
         outputBinding.RowKey = msg[idField] + '-' + (new Date()).toISOString();
-        context.log('outputBinding', outputBinding);
+        //context.log('outputBinding', outputBinding);
         return outputBinding;
+}
+
+function cloneForSharePoint( context, msg ) {
+        var sharepointObj = JSON.parse(JSON.stringify(msg));
+        delete sharepointObj.nc4__agencyName;
+        delete sharepointObj.nc4__listName;
+        delete sharepointObj.nc4__idField;
+        //context.log('sharepointObj', sharepointObj);
+        return sharepointObj;
 }
 
 function processMessage(context, _sp, _list, _idField, _msg) {
@@ -83,8 +67,8 @@ function processMessage(context, _sp, _list, _idField, _msg) {
                         context.log('get callback triggered');
                         if (error) {
                                 context.log.error('lookup by ' + idField + ' for value ' + _msg[_idField] + ' returned error');
-                                context.binding.tableContent.nc4__error = error;
-                                context.done();
+                                context.binding.tableContent[0].nc4__error = error;
+                                context.done(error);
                                 return;
                         } else {
 
@@ -97,7 +81,7 @@ function processMessage(context, _sp, _list, _idField, _msg) {
                                         addToSharePoint(context, _sp, _msg, _idField);
                                 } else if (data.length > 1) {
                                         context.log.error('data.length was > 1');
-                                        context.binding.tableContent.nc4__error = 'something wrong';
+                                        context.binding.tableContent[0].nc4__error = 'something wrong';
                                         context.done('Only expected one item returned - something is wrong', _msg);
                                 } else {
                                         context.log('data.length was 1');
@@ -114,8 +98,8 @@ function addToSharePoint(context, _sp, _msg, _idField) {
                         context.log.error('addToSharePoint:error() triggered');
                         for (var i = 0; i < items.length; i++)
                                 context.log.error("Add Error '" + items[i].errorMessage + "' with:" + items[i][_idField]);
-                        context.binding.tableContent.nc4__error = items[0].errorMessage;
-                        context.done();
+                        context.binding.tableContent[0].nc4__error = items[0].errorMessage;
+                        context.done(items[0].errorMessage);
                 },
                 success: function (items) {
                         context.log('addToSharePoint:success() triggered');
@@ -136,8 +120,8 @@ function updateSharePoint(context, _sp, _msg, _idField) {
                         context.log.error('updateToSharePoint:error() triggered');
                         for (var i = 0; i < items.length; i++)
                                 context.log.error("Update Error '" + items[i].errorMessage + "' with:" + items[i][_idField]);
-                        context.binding.tableContent.nc4__error = items[0].errorMessage;
-                        context.done();
+                        context.binding.tableContent[0].nc4__error = items[0].errorMessage;
+                        context.done( items[0].errorMessage );
                 },
                 success: function (items) {
                         context.log('updateToSharePoint:success() triggered');
