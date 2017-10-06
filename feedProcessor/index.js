@@ -55,6 +55,7 @@ module.exports = function (context, myQueueItem) {
                 var sp = $SP().auth(userDefinition);
                 var list = sp.list(listName, url);
                 //processMessage(context, sp, list, idField, sharepointObj);
+                context.done();
         } catch (ex) {
                 context.log.error('exception handler triggered', ex);
                 outputBinding.nc4_error = ex;
