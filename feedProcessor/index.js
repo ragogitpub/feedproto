@@ -1,6 +1,7 @@
 const $SP = require('sharepointplus');
 
 module.exports = function (context, myQueueItem) {
+        context.log(`Dequeue count: ${context.bindingData.dequeueCount}`, myQueueItem);
         var agencyName = myQueueItem.nc4__agencyName;
         var listName = myQueueItem.nc4__listName;
         var idField = myQueueItem.nc4__idField;
@@ -64,11 +65,10 @@ function processMessage(context, _sp, _list, _idField, _msg) {
                                 where: _idField + ' = "' + _msg[_idField] + '"'
                         },
                         function (data, error) {
-                                context.log('get callback triggered');
                                 if (error) {
                                         context.log.error('lookup by ' + idField + ' for value ' + _msg[_idField] + ' returned error');
                                         context.binding.tableContent[0].nc4__error = error;
-                                        context.done(error, _msg);
+                                        context.done(error);
                                         return;
                                 } else {
 
@@ -82,7 +82,7 @@ function processMessage(context, _sp, _list, _idField, _msg) {
                                         } else if (data.length > 1) {
                                                 context.log.error('data.length was > 1');
                                                 context.binding.tableContent[0].nc4__error = 'something wrong';
-                                                context.done('Only expected one item returned - something is wrong', _msg);
+                                                context.done('Only expected one item returned - something is wrong');
                                         } else {
                                                 context.log('data.length was 1');
                                                 updateSharePoint(context, _sp, _msg, _idField);
@@ -96,8 +96,13 @@ function addToSharePoint(context, _sp, _msg, _idField) {
         _sp.add(_msg, {
                 error: function (items) {
                         context.log.error('addToSharePoint:error() triggered');
-                        context.binding.tableContent[0].nc4__error = items[0].errorMessage;
-                        context.done(items[0].errorMessage, _msg);
+                        try {
+                                context.binding.tableContent[0].nc4__error = items[0].errorMessage;
+                                context.done(items[0].errorMessage);
+                        } catch(ex) {
+                                context.log.error(ex);
+                                context.done();
+                        }
                 },
                 success: function (items) {
                         context.log('addToSharePoint:success() triggered');
@@ -116,8 +121,13 @@ function updateSharePoint(context, _sp, _msg, _idField) {
                 where: _idField + ' = "' + _msg[_idField] + '"',
                 error: function (items) {
                         context.log.error('updateToSharePoint:error() triggered');
-                        context.binding.tableContent[0].nc4__error = items[0].errorMessage;
-                        context.done(items[0].errorMessage, _msg);
+                        try {
+                                context.binding.tableContent[0].nc4__error = items[0].errorMessage;
+                                context.done(items[0].errorMessage);
+                        } catch(ex) {
+                                context.log.error(ex);
+                                context.done();
+                        }
                 },
                 success: function (items) {
                         context.log('updateToSharePoint:success() triggered');
