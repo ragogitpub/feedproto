@@ -120,6 +120,7 @@ function updateSharePoint(context, _sp, _msg, _idField) {
                         context.log.error('updateToSharePoint:error() triggered');
                         try {
                                 context.log.error(items[0].errorMessage);
+                                context.log.error( context );
                                 context.done(items[0].errorMessage);
                         } catch(ex) {
                                 context.log.error(ex);
