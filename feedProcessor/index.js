@@ -109,16 +109,7 @@ function updateSharePoint(context, _sp, _msg, _idField) {
                 where: _idField + ' = "' + _msg[_idField] + '"',
                 error: function (items) {
                         context.log.error('updateToSharePoint:error() triggered');
-                        try {
-                                context.log.error(items[0].errorMessage);
-                                context.log.error( context );
-                                context.bindings.tableContent[0].nc4__error = items[0].errorMessage;
-                                context.done();
-                                //context.done(items[0].errorMessage);
-                        } catch(ex) {
-                                context.log.error(ex);
-                                context.done();
-                        }
+                        handleError( context, items[0].errorMessage);
                 },
                 success: function (items) {
                         context.log('updateToSharePoint:success() triggered');
@@ -127,6 +118,22 @@ function updateSharePoint(context, _sp, _msg, _idField) {
                         context.done();
                 }
         });
+}
+
+function handleError(context,errorMessage) {
+        try {
+                context.log.error(errorMessage);
+                var originalBinding = JSON.parse(JSON.stringify(context.bindings.tableContent[0]));
+                var errorBinding = JSON.parse(JSON.stringify(context.bindings.tableContent[0]));
+                originalBinding.nc4__error = errorMessage;
+                errorBinding.nc4__error = errorMessage;
+                context.bindings.tableContent[0] = originalBinding;
+                context.bindings.tableContent[1] = errorBinding;
+                context.done();
+        } catch(ex) {
+                context.log.error(ex);
+                context.done();
+        }
 }
 
 function settingForAgency(agencyName, settingName) {
