@@ -127,6 +127,7 @@ function handleError(context,errorMessage) {
                 var errorBinding = JSON.parse(JSON.stringify(context.bindings.tableContent[0]));
                 originalBinding.nc4__error = errorMessage;
                 errorBinding.nc4__error = errorMessage;
+                errorBinding.PartitionKey = errorBinding.PartitionKey + '-Errors';
                 context.bindings.tableContent[0] = originalBinding;
                 context.bindings.tableContent[1] = errorBinding;
                 context.done();
