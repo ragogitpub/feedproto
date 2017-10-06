@@ -130,13 +130,13 @@ function handleError(context,errorMessage) {
                 errorBinding.PartitionKey = errorBinding.PartitionKey + '-Errors';
                 context.bindings.tableContent[0] = originalBinding;
                 context.bindings.tableContent[1] = errorBinding;
-                context.bindings.emailErrorMessage[0] = {
+                context.bindings.emailErrorMessage = [{
                         "personalizations": [ { "to": [ { "email": "rajesh.goswami@nc4.com" } ] } ],
-                       content: [{
-                           type: 'text/plain',
-                           value: JSON.stringify(errorBinding)
+                       "content": [{
+                           "type": 'text/plain',
+                           "value": JSON.stringify(errorBinding)
                        }]
-                   };
+                   }];
                 context.done();
         } catch(ex) {
                 context.log.error(ex);
