@@ -1,5 +1,31 @@
 const $SP = require('sharepointplus');
 
+function cloneForSharePoint( context, msg ) {
+        // var sharepointObj = JSON.parse(JSON.stringify(msg));
+        // delete sharepointObj.nc4__agencyName;
+        // delete sharepointObj.nc4__listName;
+        // delete sharepointObj.nc4__idField;
+
+        var sharepointObj = {};
+        for( var k in msg) {
+                if ( msg.hasOwnProperty(k)) {
+                        context.log( k, msg[k]);
+                        if( 
+                                k.equalsIgnoreCase('nc4__agencyName') 
+                                || k.equalsIgnoreCase('nc4__listName')
+                                || k.equalsIgnoreCase('nc4__idField')
+                        ) {
+                                context.log( 'ignoring', k );
+                        } else {
+                                context.log('assigning', k, '=', msg[k]);
+                                sharepointObj[k] = msg[k];
+                        }
+                }
+        }
+        context.log('sharepointObj', sharepointObj);
+        return sharepointObj;
+}
+
 module.exports = function (context, myQueueItem) {
         var agencyName = myQueueItem.nc4__agencyName;
         var listName = myQueueItem.nc4__listName;
@@ -17,11 +43,7 @@ module.exports = function (context, myQueueItem) {
         var outputBinding = cloneForOutputBinding( context, agencyName, listName, idField, myQueueItem);
         context.bindings.tableContent = [outputBinding];
                 
-        var sharepointObj = JSON.parse(JSON.stringify(myQueueItem));
-        delete sharepointObj.nc4__agencyName;
-        delete sharepointObj.nc4__listName;
-        delete sharepointObj.nc4__idField;
-        context.log('sharepointObj', sharepointObj);
+        var sharepointObj = cloneForSharePoint( context, myQueueItem );
 
         var userDefinition = {
                 username: user,
@@ -32,7 +54,7 @@ module.exports = function (context, myQueueItem) {
         try {
                 var sp = $SP().auth(userDefinition);
                 var list = sp.list(listName, url);
-                processMessage(context, sp, list, idField, sharepointObj);
+                //processMessage(context, sp, list, idField, sharepointObj);
         } catch (ex) {
                 context.log.error('exception handler triggered', ex);
                 outputBinding.nc4_error = ex;
@@ -43,7 +65,7 @@ module.exports = function (context, myQueueItem) {
 };
 
 function cloneForOutputBinding( context, agencyName, listName, idField, msg ) {
-        var outputBinding = JSON.parse(JSON.stringify(myQueueItem));
+        var outputBinding = JSON.parse(JSON.stringify(msg));
         outputBinding.PartitionKey = agencyName + '-' + listName;
         outputBinding.RowKey = myQueueItem[idField] + '-' + (new Date()).toISOString();
         context.log('outputBinding', outputBinding);
