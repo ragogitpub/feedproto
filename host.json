@@ -2,6 +2,7 @@
     "id":"2218e0e3e1c84d19954575752e8823b8",
     "functionTimeout": "00:02:00",
     "queues": {
-        "maxDequeueCount": 1
+        "maxDequeueCount": 1,
+        "visibilityTimeout": "00:00:30"
     }
 }

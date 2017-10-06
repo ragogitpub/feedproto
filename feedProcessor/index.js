@@ -34,7 +34,7 @@ module.exports = function (context, myQueueItem) {
         } catch (ex) {
                 context.log.error('exception handler triggered', ex);
                 outputBinding.nc4__error = ex;
-                context.done(ex, sharepointObj);
+                context.done('exception handler triggered');
         }
 
         // context.done();
