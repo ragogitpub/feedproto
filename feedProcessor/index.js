@@ -33,7 +33,6 @@ module.exports = function (context, myQueueItem) {
                 //context.done();
         } catch (ex) {
                 context.log.error('exception handler triggered', ex);
-                outputBinding.nc4__error = ex;
                 context.done('exception handler triggered');
         }
 
@@ -67,7 +66,6 @@ function processMessage(context, _sp, _list, _idField, _msg) {
                         function (data, error) {
                                 if (error) {
                                         context.log.error('lookup by ' + idField + ' for value ' + _msg[_idField] + ' returned error');
-                                        context.binding.tableContent[0].nc4__error = error;
                                         context.done(error);
                                         return;
                                 } else {
@@ -81,7 +79,6 @@ function processMessage(context, _sp, _list, _idField, _msg) {
                                                 addToSharePoint(context, _sp, _msg, _idField);
                                         } else if (data.length > 1) {
                                                 context.log.error('data.length was > 1');
-                                                context.binding.tableContent[0].nc4__error = 'something wrong';
                                                 context.done('Only expected one item returned - something is wrong');
                                         } else {
                                                 context.log('data.length was 1');
@@ -97,7 +94,7 @@ function addToSharePoint(context, _sp, _msg, _idField) {
                 error: function (items) {
                         context.log.error('addToSharePoint:error() triggered');
                         try {
-                                context.binding.tableContent[0].nc4__error = items[0].errorMessage;
+                                context.log.error(items[0].errorMessage);
                                 context.done(items[0].errorMessage);
                         } catch(ex) {
                                 context.log.error(ex);
@@ -122,7 +119,7 @@ function updateSharePoint(context, _sp, _msg, _idField) {
                 error: function (items) {
                         context.log.error('updateToSharePoint:error() triggered');
                         try {
-                                context.binding.tableContent[0].nc4__error = items[0].errorMessage;
+                                context.log.error(items[0].errorMessage);
                                 context.done(items[0].errorMessage);
                         } catch(ex) {
                                 context.log.error(ex);
