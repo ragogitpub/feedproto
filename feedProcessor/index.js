@@ -9,7 +9,6 @@ function cloneForSharePoint( context, msg ) {
         var sharepointObj = {};
         for( var k in msg) {
                 if ( msg.hasOwnProperty(k)) {
-                        context.log( k, msg[k]);
                         if( 
                                 k == 'nc4__agencyName' 
                                 || k == 'nc4__listName'
@@ -54,8 +53,8 @@ module.exports = function (context, myQueueItem) {
         try {
                 var sp = $SP().auth(userDefinition);
                 var list = sp.list(listName, url);
-                //processMessage(context, sp, list, idField, sharepointObj);
-                context.done();
+                processMessage(context, sp, list, idField, sharepointObj);
+                //context.done();
         } catch (ex) {
                 context.log.error('exception handler triggered', ex);
                 outputBinding.nc4_error = ex;
