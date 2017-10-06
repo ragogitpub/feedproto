@@ -67,7 +67,7 @@ module.exports = function (context, myQueueItem) {
 function cloneForOutputBinding( context, agencyName, listName, idField, msg ) {
         var outputBinding = JSON.parse(JSON.stringify(msg));
         outputBinding.PartitionKey = agencyName + '-' + listName;
-        outputBinding.RowKey = myQueueItem[idField] + '-' + (new Date()).toISOString();
+        outputBinding.RowKey = msg[idField] + '-' + (new Date()).toISOString();
         context.log('outputBinding', outputBinding);
         return outputBinding;
 }
@@ -157,7 +157,7 @@ function urlForAgency(agencyName) {
 }
 
 function userForAgency(agencyName) {
-        return settingForAgency(agencyName, 'username')
+        return settingForAgency(agencyName, 'username');
 }
 
 function passwordForAgency(agencyName) {
