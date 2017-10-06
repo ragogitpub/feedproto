@@ -1,26 +1,5 @@
 const $SP = require('sharepointplus');
 
-
-function settingForAgency(agencyName, settingName) {
-        return process.env['agency' + '.' + agencyName + '.' + settingName];
-}
-
-function urlForAgency(agencyName) {
-        return settingForAgency(agencyName, 'url');
-}
-
-function userForAgency(agencyName) {
-        return settingForAgency(agencyName, 'username')
-}
-
-function passwordForAgency(agencyName) {
-        return settingForAgency(agencyName, 'password');
-}
-
-function domainForAgency(agencyName) {
-        return settingForAgency(agencyName, 'domain');
-}
-
 module.exports = function (context, myQueueItem) {
         var agencyName = myQueueItem.nc4__agencyName;
         var listName = myQueueItem.nc4__listName;
@@ -35,12 +14,9 @@ module.exports = function (context, myQueueItem) {
                 'agency=>', agencyName, 'list=>', listName, 'idField=>', idField,
                 'url=>', url, 'domain=>', domain, 'username=>', user, 'password=>', password);
 
-        var outputBinding = JSON.parse(JSON.stringify(myQueueItem));
-        outputBinding.PartitionKey = agencyName + '-' + listName;
-        outputBinding.RowKey = myQueueItem[idField] + '-' + (new Date()).toISOString();
+        var outputBinding = cloneForOutputBinding( context, agencyName, listName, idField, myQueueItem);
         context.bindings.tableContent = [outputBinding];
-        context.log('outputBinding', outputBinding);
-
+                
         var sharepointObj = JSON.parse(JSON.stringify(myQueueItem));
         delete sharepointObj.nc4__agencyName;
         delete sharepointObj.nc4__listName;
@@ -65,6 +41,14 @@ module.exports = function (context, myQueueItem) {
 
         // context.done();
 };
+
+function cloneForOutputBinding( context, agencyName, listName, idField, msg ) {
+        var outputBinding = JSON.parse(JSON.stringify(myQueueItem));
+        outputBinding.PartitionKey = agencyName + '-' + listName;
+        outputBinding.RowKey = myQueueItem[idField] + '-' + (new Date()).toISOString();
+        context.log('outputBinding', outputBinding);
+        return outputBinding;
+}
 
 function processMessage(context, _sp, _list, _idField, _msg) {
         context.log('processMessage, entry()');
@@ -141,3 +125,24 @@ function updateSharePoint(context, _sp, _msg, _idField) {
                 }
         });
 }
+
+function settingForAgency(agencyName, settingName) {
+        return process.env['agency' + '.' + agencyName + '.' + settingName];
+}
+
+function urlForAgency(agencyName) {
+        return settingForAgency(agencyName, 'url');
+}
+
+function userForAgency(agencyName) {
+        return settingForAgency(agencyName, 'username')
+}
+
+function passwordForAgency(agencyName) {
+        return settingForAgency(agencyName, 'password');
+}
+
+function domainForAgency(agencyName) {
+        return settingForAgency(agencyName, 'domain');
+}
+
