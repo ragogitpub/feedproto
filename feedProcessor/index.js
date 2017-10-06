@@ -88,7 +88,7 @@ function addToSharePoint(context, _sp, _msg, _idField) {
                         try {
                                 context.log.error(items[0].errorMessage);
                                 context.done(items[0].errorMessage);
-                        } catch(ex) {
+                        } catch (ex) {
                                 context.log.error(ex);
                                 context.done();
                         }
@@ -109,7 +109,7 @@ function updateSharePoint(context, _sp, _msg, _idField) {
                 where: _idField + ' = "' + _msg[_idField] + '"',
                 error: function (items) {
                         context.log.error('updateToSharePoint:error() triggered');
-                        handleError( context, items[0].errorMessage);
+                        handleError(context, items[0].errorMessage);
                 },
                 success: function (items) {
                         context.log('updateToSharePoint:success() triggered');
@@ -120,7 +120,7 @@ function updateSharePoint(context, _sp, _msg, _idField) {
         });
 }
 
-function handleError(context,errorMessage) {
+function handleError(context, errorMessage) {
         try {
                 context.log.error(errorMessage);
                 var originalBinding = JSON.parse(JSON.stringify(context.bindings.tableContent[0]));
@@ -130,15 +130,19 @@ function handleError(context,errorMessage) {
                 errorBinding.PartitionKey = errorBinding.PartitionKey + '-Errors';
                 context.bindings.tableContent[0] = originalBinding;
                 context.bindings.tableContent[1] = errorBinding;
-                context.bindings.emailErrorMessage = [{
-                        "personalizations": [ { "to": [ { "email": "rajesh.goswami@nc4.com" } ] } ],
-                       "content": [{
-                           "type": 'text/plain',
-                           "value": JSON.stringify(errorBinding)
-                       }]
-                   }];
+                context.bindings.errorEmailMessage = [{
+                        "personalizations": [{
+                                "to": [{
+                                        "email": "rajesh.goswami@nc4.com"
+                                }]
+                        }],
+                        "content": [{
+                                "type": 'text/plain',
+                                "value": JSON.stringify(errorBinding)
+                        }]
+                }];
                 context.done();
-        } catch(ex) {
+        } catch (ex) {
                 context.log.error(ex);
                 context.done();
         }
