@@ -11,9 +11,9 @@ function cloneForSharePoint( context, msg ) {
                 if ( msg.hasOwnProperty(k)) {
                         context.log( k, msg[k]);
                         if( 
-                                k.equalsIgnoreCase('nc4__agencyName') 
-                                || k.equalsIgnoreCase('nc4__listName')
-                                || k.equalsIgnoreCase('nc4__idField')
+                                k == 'nc4__agencyName' 
+                                || k == 'nc4__listName'
+                                || k == 'nc4__idField'
                         ) {
                                 context.log( 'ignoring', k );
                         } else {
