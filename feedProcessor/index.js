@@ -113,7 +113,8 @@ function updateSharePoint(context, _sp, _msg, _idField) {
                                 context.log.error(items[0].errorMessage);
                                 context.log.error( context );
                                 context.bindings.tableContent[0].nc4__error = items[0].errorMessage;
-                                context.done(items[0].errorMessage);
+                                context.done();
+                                //context.done(items[0].errorMessage);
                         } catch(ex) {
                                 context.log.error(ex);
                                 context.done();
