@@ -10,6 +10,16 @@ module.exports = function (context, myQueueItem) {
         var user = userForAgency(agencyName);
         var password = passwordForAgency(agencyName);
         var domain = domainForAgency(agencyName);
+        var errorEmails = emailsForAgency(agencyName);
+
+        context.nc4 = {};
+        context.nc4.url = url;
+        context.nc4.password = password;
+        context.nc4.domain = domain;
+        context.nc4.errorEmails = errorEmails;
+        context.nc4.agencyName = agencyName;
+        context.nc4.listName = listName;
+        context.nc4.idField = idField;
 
         context.log.info(
                 'agency=>', agencyName, 'list=>', listName, 'idField=>', idField,
@@ -133,12 +143,12 @@ function handleError(context, errorMessage) {
                 context.bindings.errorEmailMessage = [{
                         "personalizations": [{
                                 "to": [{
-                                        "email": "rajesh.goswami@nc4.com"
+                                        "email": context.nc4.errorEmails
                                 }]
                         }],
                         "content": [{
                                 "type": 'text/plain',
-                                "value": JSON.stringify(errorBinding)
+                                "value": JSON.stringify(errorBinding, null, 4)
                         }]
                 }];
                 context.done();
@@ -166,4 +176,15 @@ function passwordForAgency(agencyName) {
 
 function domainForAgency(agencyName) {
         return settingForAgency(agencyName, 'domain');
+}
+
+function emailsForAgency(agencyName) {
+        return settingForAgency(agencyName, 'errorEmails');
+        // var csvEmails = settingForAgency(agencyName, 'errorEmails');
+        
+        // if ( csvEmails == undefined) csvEmails = 'rajesh.goswami@nc4.com';
+
+        // var arrEmails = csvEmails.split(',');
+
+        // return arrEmails;
 }
