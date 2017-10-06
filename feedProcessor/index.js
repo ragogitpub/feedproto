@@ -42,8 +42,7 @@ module.exports = function (context, myQueueItem) {
                 processMessage(context, sp, list, idField, sharepointObj);
                 //context.done();
         } catch (ex) {
-                context.log.error('exception handler triggered', ex);
-                context.done('exception handler triggered');
+                handleError(context, 'exception handler triggered');
         }
 
         // context.done();
@@ -75,14 +74,14 @@ function processMessage(context, _sp, _list, _idField, _msg) {
                         function (data, error) {
                                 if (error) {
                                         context.log.error('lookup by ' + idField + ' for value ' + _msg[_idField] + ' returned error');
-                                        context.done(error);
+                                        handleError(context, 'lookup by ' + idField + ' for value ' + _msg[_idField] + ' returned error');
                                         return;
                                 } else {
                                         if (data.length === 0) {
                                                 addToSharePoint(context, _sp, _msg, _idField);
                                         } else if (data.length > 1) {
                                                 context.log.error('data.length was > 1');
-                                                context.done('Only expected one item returned - something is wrong');
+                                                handleError(context, 'data.length was > 1');
                                         } else {
                                                 updateSharePoint(context, _sp, _msg, _idField);
                                         }
@@ -95,13 +94,7 @@ function addToSharePoint(context, _sp, _msg, _idField) {
         _sp.add(_msg, {
                 error: function (items) {
                         context.log.error('addToSharePoint:error() triggered');
-                        try {
-                                context.log.error(items[0].errorMessage);
-                                context.done(items[0].errorMessage);
-                        } catch (ex) {
-                                context.log.error(ex);
-                                context.done();
-                        }
+                        handleError(context, items[0].errorMessage);
                 },
                 success: function (items) {
                         context.log('addToSharePoint:success() triggered');
