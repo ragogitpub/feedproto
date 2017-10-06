@@ -13,6 +13,14 @@
       "tableName": "processedmessages",
       "connection": "AzureWebJobsDashboard",
       "direction": "out"
+    },
+    {
+      "type": "sendGrid",
+      "name": "errorEmailMessage",
+      "apiKey": "SendGridKey",
+      "from": "rajesh.goswami@nc4.com",
+      "subject": "Error Notification from sharepoint feedProcessor",
+      "direction": "out"
     }
   ],
   "disabled": false

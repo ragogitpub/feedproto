@@ -134,7 +134,7 @@ function handleError(context,errorMessage) {
                         "personalizations": [ { "to": [ { "email": "rajesh.goswami@nc4.com" } ] } ],
                        content: [{
                            type: 'text/plain',
-                           value: JSON.stringify(errorMessage)
+                           value: JSON.stringify(errorBinding)
                        }]
                    };
                 context.done();
