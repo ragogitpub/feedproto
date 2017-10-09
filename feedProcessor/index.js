@@ -1,47 +1,47 @@
 const $SP = require('sharepointplus');
 
 module.exports = function (context, myQueueItem) {
-        //context.log(`Dequeue count: ${context.bindingData.dequeueCount}`, myQueueItem);
-        context.log(`Dequeue count: ${context.bindingData.dequeueCount}`);
-        var agencyName = myQueueItem.nc4__agencyName;
-        var listName = myQueueItem.nc4__listName;
-        var idField = myQueueItem.nc4__idField;
-
-        var url = urlForAgency(agencyName);
-        var user = userForAgency(agencyName);
-        var password = passwordForAgency(agencyName);
-        var domain = domainForAgency(agencyName);
-        var errorEmails = emailsForAgency(agencyName);
-
-        if ( myQueueItem.nc4__errorEmails ) {
-                errorEmails = errorEmails + ',' + myQueueItem.nc4__errorEmails;
-        }
-
-        context.nc4 = {};
-        context.nc4.url = url;
-        context.nc4.password = password;
-        context.nc4.domain = domain;
-        context.nc4.errorEmails = errorEmails;
-        context.nc4.agencyName = agencyName;
-        context.nc4.listName = listName;
-        context.nc4.idField = idField;
-
-        context.log.info(
-                'agency=>', agencyName, 'list=>', listName, 'idField=>', idField,
-                'url=>', url, 'domain=>', domain, 'username=>', user, 'password=>', password);
-
-        var outputBinding = cloneForOutputBinding(context, agencyName, listName, idField, myQueueItem);
-        context.bindings.tableContent = [outputBinding];
-
-        var sharepointObj = cloneForSharePoint(context, myQueueItem);
-
-        var userDefinition = {
-                username: user,
-                password: password,
-                domain: domain
-        };
-
         try {
+                //context.log(`Dequeue count: ${context.bindingData.dequeueCount}`, myQueueItem);
+                context.log(`Dequeue count: ${context.bindingData.dequeueCount}`);
+                var agencyName = myQueueItem.nc4__agencyName;
+                var listName = myQueueItem.nc4__listName;
+                var idField = myQueueItem.nc4__idField;
+
+                var url = urlForAgency(agencyName);
+                var user = userForAgency(agencyName);
+                var password = passwordForAgency(agencyName);
+                var domain = domainForAgency(agencyName);
+                var errorEmails = emailsForAgency(agencyName);
+
+                if (myQueueItem.nc4__errorEmails) {
+                        errorEmails = errorEmails + ',' + myQueueItem.nc4__errorEmails;
+                }
+
+                context.nc4 = {};
+                context.nc4.url = url;
+                context.nc4.password = password;
+                context.nc4.domain = domain;
+                context.nc4.errorEmails = errorEmails;
+                context.nc4.agencyName = agencyName;
+                context.nc4.listName = listName;
+                context.nc4.idField = idField;
+
+                context.log.info(
+                        'agency=>', agencyName, 'list=>', listName, 'idField=>', idField,
+                        'url=>', url, 'domain=>', domain, 'username=>', user, 'password=>', password);
+
+                var outputBinding = cloneForOutputBinding(context, agencyName, listName, idField, myQueueItem);
+                context.bindings.tableContent = [outputBinding];
+
+                var sharepointObj = cloneForSharePoint(context, myQueueItem);
+
+                var userDefinition = {
+                        username: user,
+                        password: password,
+                        domain: domain
+                };
+
                 var sp = $SP().auth(userDefinition);
                 var list = sp.list(listName, url);
                 processMessage(context, sp, list, idField, sharepointObj);
@@ -79,10 +79,10 @@ function processMessage(context, _sp, _list, _idField, _msg) {
                                         where: _idField + ' = "' + _msg[_idField] + '"'
                                 },
                                 function (data, error) {
-                                        context.log.error( 'get cb triggered ');
+                                        context.log.error('get cb triggered ');
                                         if (error) {
                                                 context.log.error('lookup by ' + _idField + ' for value ' + _msg[_idField] + ' returned error');
-                                                handleError(context, 'lookup by ' + _idField + ' for value ' + _msg[_idField] + ' returned error' + '\n' + error );
+                                                handleError(context, 'lookup by ' + _idField + ' for value ' + _msg[_idField] + ' returned error' + '\n' + error);
                                                 return;
                                         } else {
                                                 if (data.length === 0) {
@@ -145,7 +145,9 @@ function handleError(context, errorMessage) {
                 errorBinding.PartitionKey = errorBinding.PartitionKey + '-Errors';
                 context.bindings.tableContent[0] = originalBinding;
                 context.bindings.tableContent[1] = errorBinding;
-                var personalizations = [{ "to": [] }];
+                var personalizations = [{
+                        "to": []
+                }];
                 context.nc4.errorEmails.split(/[,;\s]+/).forEach(function (item) {
                         personalizations[0].to.push({
                                 email: item.trim()
@@ -160,7 +162,7 @@ function handleError(context, errorMessage) {
                 }];
                 context.done();
         } catch (ex) {
-                context.log.error( ex );
+                context.log.error(ex);
                 context.done();
         }
 }
