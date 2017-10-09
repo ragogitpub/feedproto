@@ -89,9 +89,9 @@ function processMessage(context, _sp, _list, _idField, _msg) {
                                                 }
                                         }
                                 });
-        } catch {
+        } catch (ex) {
                 context.log.error('exception handler triggered in processMessage');
-                handleError(context, 'exception handler triggered in processMessage');
+                handleError(context, ex.stack);
         }
 }
 
