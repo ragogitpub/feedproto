@@ -137,14 +137,10 @@ function handleError(context, errorMessage) {
                 var personalizations = [];
                 context.nc4.errorEmails.split(',;').forEach( function(item) {
                         console.log( 'email add ' + item );
-                        personalizations.push( { email: item } );
+                        personalizations.push( { email: item.trim() } );
                 });
                 context.bindings.errorEmailMessage = [{
-                        "personalizations": [{
-                                "to": [{
-                                        "email": context.nc4.errorEmails
-                                }]
-                        }],
+                        "personalizations": personalizations,
                         "content": [{
                                 "type": 'text/plain',
                                 "value": JSON.stringify(errorBinding, null, 4)
