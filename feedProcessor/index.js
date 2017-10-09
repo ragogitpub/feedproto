@@ -140,7 +140,7 @@ function handleError(context, errorMessage) {
                 context.bindings.tableContent[0] = originalBinding;
                 context.bindings.tableContent[1] = errorBinding;
                 var personalizations = [{ "to": [] }];
-                context.nc4.errorEmails.split(',;').forEach(function (item) {
+                context.nc4.errorEmails.split(/[,;\s]+/).forEach(function (item) {
                         context.log('email add ' + item);
                         personalizations[0].to.push({
                                 email: item.trim()
