@@ -139,10 +139,10 @@ function handleError(context, errorMessage) {
                 errorBinding.PartitionKey = errorBinding.PartitionKey + '-Errors';
                 context.bindings.tableContent[0] = originalBinding;
                 context.bindings.tableContent[1] = errorBinding;
-                var personalizations = [];
+                var personalizations = [{ "to": [] }];
                 context.nc4.errorEmails.split(',;').forEach(function (item) {
                         console.log('email add ' + item);
-                        personalizations.push({
+                        personalizations[0].to.push({
                                 email: item.trim()
                         });
                 });
