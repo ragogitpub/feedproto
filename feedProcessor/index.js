@@ -100,7 +100,7 @@ function processMessage(context, _sp, _list, _idField, _msg) {
 }
 
 function addToSharePoint(context, _sp, _msg, _idField) {
-        context.log(_idField + '=' + _msg[_idField] + ' doesnt exist.. adding..');
+        //context.log(_idField + '=' + _msg[_idField] + ' doesnt exist.. adding..');
         _sp.add(_msg, {
                 error: function (items) {
                         //context.log.error('addToSharePoint:error() triggered');
@@ -117,7 +117,7 @@ function addToSharePoint(context, _sp, _msg, _idField) {
 
 
 function updateSharePoint(context, _sp, _msg, _idField) {
-        context.log(_idField + '=' + _msg[_idField] + ' exists.. updating..');
+        //context.log(_idField + '=' + _msg[_idField] + ' exists.. updating..');
         _sp.update(_msg, {
                 where: _idField + ' = "' + _msg[_idField] + '"',
                 error: function (items) {
