@@ -66,6 +66,7 @@ function cloneForSharePoint(context, msg) {
         delete sharepointObj.nc4__agencyName;
         delete sharepointObj.nc4__listName;
         delete sharepointObj.nc4__idField;
+        delete sharepointObj.nc4__errorEmails;
         //context.log('sharepointObj', sharepointObj);
         return sharepointObj;
 }
