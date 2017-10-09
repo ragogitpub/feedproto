@@ -79,9 +79,7 @@ function processMessage(context, _sp, _list, _idField, _msg) {
                                         where: _idField + ' = "' + _msg[_idField] + '"'
                                 },
                                 function (data, error) {
-                                        context.log.error('get cb triggered ');
                                         if (error) {
-                                                context.log.error('lookup by ' + _idField + ' for value ' + _msg[_idField] + ' returned error');
                                                 handleError(context, 'lookup by ' + _idField + ' for value ' + _msg[_idField] + ' returned error' + '\n' + error);
                                                 return;
                                         } else {
