@@ -3,7 +3,6 @@ const $SP = require('sharepointplus');
 module.exports = function (context, myQueueItem) {
         try {
                 //context.log(`Dequeue count: ${context.bindingData.dequeueCount}`, myQueueItem);
-                context.log(`Dequeue count: ${context.bindingData.dequeueCount}`);
                 var agencyName = myQueueItem.nc4__agencyName;
                 var listName = myQueueItem.nc4__listName;
                 var idField = myQueueItem.nc4__idField;
@@ -28,6 +27,7 @@ module.exports = function (context, myQueueItem) {
                 context.nc4.idField = idField;
 
                 context.log.info(
+                        'Dequeue count=>', context.bindingData.dequeueCount,
                         'agency=>', agencyName, 'list=>', listName, 'idField=>', idField,
                         'url=>', url, 'domain=>', domain, 'username=>', user, 'password=>', password);
 
