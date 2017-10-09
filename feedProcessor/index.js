@@ -67,27 +67,32 @@ function cloneForSharePoint(context, msg) {
 }
 
 function processMessage(context, _sp, _list, _idField, _msg) {
-        _list
-                .get({
-                                fields: '',
-                                where: _idField + ' = "' + _msg[_idField] + '"'
-                        },
-                        function (data, error) {
-                                if (error) {
-                                        context.log.error('lookup by ' + idField + ' for value ' + _msg[_idField] + ' returned error');
-                                        handleError(context, 'lookup by ' + idField + ' for value ' + _msg[_idField] + ' returned error');
-                                        return;
-                                } else {
-                                        if (data.length === 0) {
-                                                addToSharePoint(context, _sp, _msg, _idField);
-                                        } else if (data.length > 1) {
-                                                context.log.error('data.length was > 1');
-                                                handleError(context, 'data.length was > 1');
+        try {
+                _list
+                        .get({
+                                        fields: '',
+                                        where: _idField + ' = "' + _msg[_idField] + '"'
+                                },
+                                function (data, error) {
+                                        if (error) {
+                                                context.log.error('lookup by ' + idField + ' for value ' + _msg[_idField] + ' returned error');
+                                                handleError(context, 'lookup by ' + idField + ' for value ' + _msg[_idField] + ' returned error');
+                                                return;
                                         } else {
-                                                updateSharePoint(context, _sp, _msg, _idField);
+                                                if (data.length === 0) {
+                                                        addToSharePoint(context, _sp, _msg, _idField);
+                                                } else if (data.length > 1) {
+                                                        context.log.error('data.length was > 1');
+                                                        handleError(context, 'data.length was > 1');
+                                                } else {
+                                                        updateSharePoint(context, _sp, _msg, _idField);
+                                                }
                                         }
-                                }
-                        });
+                                });
+        } catch {
+                context.log.error('exception handler triggered in processMessage');
+                handleError(context, 'exception handler triggered in processMessage');
+        }
 }
 
 function addToSharePoint(context, _sp, _msg, _idField) {
@@ -135,9 +140,11 @@ function handleError(context, errorMessage) {
                 context.bindings.tableContent[0] = originalBinding;
                 context.bindings.tableContent[1] = errorBinding;
                 var personalizations = [];
-                context.nc4.errorEmails.split(',;').forEach( function(item) {
-                        console.log( 'email add ' + item );
-                        personalizations.push( { email: item.trim() } );
+                context.nc4.errorEmails.split(',;').forEach(function (item) {
+                        console.log('email add ' + item);
+                        personalizations.push({
+                                email: item.trim()
+                        });
                 });
                 context.bindings.errorEmailMessage = [{
                         "personalizations": personalizations,
@@ -176,7 +183,7 @@ function domainForAgency(agencyName) {
 function emailsForAgency(agencyName) {
         return settingForAgency(agencyName, 'errorEmails');
         // var csvEmails = settingForAgency(agencyName, 'errorEmails');
-        
+
         // if ( csvEmails == undefined) csvEmails = 'rajesh.goswami@nc4.com';
 
         // var arrEmails = csvEmails.split(',');
