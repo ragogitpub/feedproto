@@ -13,6 +13,10 @@ module.exports = function (context, myQueueItem) {
         var domain = domainForAgency(agencyName);
         var errorEmails = emailsForAgency(agencyName);
 
+        if ( myQueueItem.nc4__errorEmails ) {
+                errorEmails = errorEmails + ',' + myQueueItem.nc4__errorEmails;
+        }
+
         context.nc4 = {};
         context.nc4.url = url;
         context.nc4.password = password;
@@ -141,7 +145,6 @@ function handleError(context, errorMessage) {
                 context.bindings.tableContent[1] = errorBinding;
                 var personalizations = [{ "to": [] }];
                 context.nc4.errorEmails.split(/[,;\s]+/).forEach(function (item) {
-                        context.log('email add ' + item);
                         personalizations[0].to.push({
                                 email: item.trim()
                         });
