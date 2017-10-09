@@ -94,11 +94,11 @@ function addToSharePoint(context, _sp, _msg, _idField) {
         context.log(_idField + '=' + _msg[_idField] + ' doesnt exists.. adding..');
         _sp.add(_msg, {
                 error: function (items) {
-                        context.log.error('addToSharePoint:error() triggered');
+                        //context.log.error('addToSharePoint:error() triggered');
                         handleError(context, items[0].errorMessage);
                 },
                 success: function (items) {
-                        context.log('addToSharePoint:success() triggered');
+                        //context.log('addToSharePoint:success() triggered');
                         for (var i = 0; i < items.length; i++)
                                 context.log("Add Success for: (" + _idField + ":" + items[i][_idField] + " )");
                         context.done();
@@ -112,11 +112,11 @@ function updateSharePoint(context, _sp, _msg, _idField) {
         _sp.update(_msg, {
                 where: _idField + ' = "' + _msg[_idField] + '"',
                 error: function (items) {
-                        context.log.error('updateToSharePoint:error() triggered');
+                        //context.log.error('updateToSharePoint:error() triggered');
                         handleError(context, items[0].errorMessage);
                 },
                 success: function (items) {
-                        context.log('updateToSharePoint:success() triggered');
+                        //context.log('updateToSharePoint:success() triggered');
                         for (var i = 0; i < items.length; i++)
                                 context.log("Update Success for: (" + _idField + ":" + items[i][_idField] + " )");
                         context.done();
