@@ -187,11 +187,4 @@ function domainForAgency(agencyName) {
 
 function emailsForAgency(agencyName) {
         return settingForAgency(agencyName, 'errorEmails');
-        // var csvEmails = settingForAgency(agencyName, 'errorEmails');
-
-        // if ( csvEmails == undefined) csvEmails = 'rajesh.goswami@nc4.com';
-
-        // var arrEmails = csvEmails.split(',');
-
-        // return arrEmails;
 }
